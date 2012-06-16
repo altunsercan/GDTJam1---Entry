@@ -11,6 +11,7 @@ package screens
 	import flash.display.Sprite;
 	import flash.geom.Vector3D;
 	
+	import gameobj.ObstacleGenearator;
 	import gameobj.PlayerFactory;
 	import gameobj.RepeatingPathFactory;
 	
@@ -23,6 +24,9 @@ package screens
 	{
 		[Inject]
 		public var y3dManager:Y3DManager;
+		
+		[Inject]
+		public var obstacleGen:ObstacleGenearator;
 		
 		[Inject]
 		public var mouseManager:MouseManager;
@@ -55,6 +59,21 @@ package screens
 		
 		public function setupNewGame():void
 		{
+			/// Set Camera
+			var fov:Number = GDTJam1.width/GDTJam1.height;
+			y3dManager.camera.frustum.setProjectionPerspective( GDTJam1.height, fov  , 1, 300 );
+			y3dManager.camera.frustum.CalcFrustumPointsPers( GDTJam1.height, fov  , 1, 300 );
+			y3dManager.camera.transformation.position = new Vector3D( 0, 10, 15 );
+			y3dManager.camera.transformation.lookAt( new Vector3D() );
+			
+			/// Set Mouse Interaction Plane
+			var mouseInteractionPlane:PlaneSceneObject = new PlaneSceneObject( 50, 50, 10, 10 );
+			mouseInteractionPlane.userID = "mouseInteractionPlane";
+			mouseInteractionPlane.material = new MaterialFill( 0xDDDDDD );
+			mouseInteractionPlane.visible = false;
+			y3dManager.scene.addChild( mouseInteractionPlane );
+			
+			/// Repeating Camera
 			m_repeatingPaths = [];
 			
 			var repeatingPath:SceneObject;
@@ -76,33 +95,19 @@ package screens
 			
 			m_repeatingPaths.push( repeatingPath );
 			
-			repeatingPath = RepeatingPathFactory.instantiateRepeatingPath();
-			repeatingPath.transformation.x = +48;
-			y3dManager.scene.addChild( repeatingPath );
+//			repeatingPath = RepeatingPathFactory.instantiateRepeatingPath();
+//			repeatingPath.transformation.x = +48;
+//			y3dManager.scene.addChild( repeatingPath );
+//			
+//			m_repeatingPaths.push( repeatingPath );
 			
-			m_repeatingPaths.push( repeatingPath );
-			
-			
-			
+			/// Player
 			var player:SceneObject = PlayerFactory.instantiatePlayer();
-			
-			
 			y3dManager.scene.addChild( player );
 			
-			/// Set Camera
-			var fov:Number = GDTJam1.width/GDTJam1.height;
-			y3dManager.camera.frustum.setProjectionPerspective( GDTJam1.height, fov  , 1, 300 );
-			y3dManager.camera.frustum.CalcFrustumPointsPers( GDTJam1.height, fov  , 1, 300 );
-			y3dManager.camera.transformation.position = new Vector3D( 0, 30, 15 );
-			y3dManager.camera.transformation.lookAt( new Vector3D() );
 			
-			
-			/// Set Mouse Interaction Plane
-			var mouseInteractionPlane:PlaneSceneObject = new PlaneSceneObject( 50, 50, 10, 10 );
-			mouseInteractionPlane.userID = "mouseInteractionPlane";
-			mouseInteractionPlane.material = new MaterialFill( 0xDDDDDD );
-			mouseInteractionPlane.visible = false;
-			y3dManager.scene.addChild( mouseInteractionPlane );
+			/// Obstacles
+			obstacleGen.start();
 			
 			/// Debug
 			// Show 3d mouse intersection point

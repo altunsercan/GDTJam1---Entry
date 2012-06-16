@@ -12,7 +12,7 @@ package gameobj.controller
 	
 	public class RepeatingPathController implements IController
 	{
-		private static const DESTROYX:Number = -48;
+		private static const DESTROYX:Number = -30;
 		
 		
 		[Inject]
@@ -34,15 +34,19 @@ package gameobj.controller
 		{
 			if( !y3dManager.gameScreen.gameRunning || scObj.scene == null ) return;
 			
-			scObj.transformation.x -= GlobalVariables.RUN_SPEED * Time.deltaTimeSeconds;
+			scObj.transformation.x -= roundPosition( GlobalVariables.RUN_SPEED * GlobalVariables.GAME_SPEED * Time.deltaTimeSeconds );
 		
 			if( scObj.transformation.x < DESTROYX )
 			{
-				scObj.transformation.x += 24 * 4;
-				//RepeatingPathFactory.recycle( scObj );
+				scObj.transformation.x += 72;
 			}
 			
 		
+		
+		}
+		private function roundPosition( pos:Number ):Number
+		{
+			return int(pos * 100)/100;
 		}
 		
 		public function dispose():void

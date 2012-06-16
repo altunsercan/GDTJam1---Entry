@@ -62,10 +62,6 @@ package managers
 				{
 					var ray:Ray = y3dManager.camera.getRayFromMousePosition( GDTJam1.height, GDTJam1.width, m_position2D.x, m_position2D.y );
 					m_position3D = ray.intersectSceneObject( interactionPlane );
-					if( m_position3D != null )
-					{
-						trace("Hurra");
-					}
 				}
 			}
 		}

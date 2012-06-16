@@ -13,7 +13,7 @@ package gameobj
 		public static function instantiatePlayer():SceneObject
 		{
 			var sc:SceneObject = new SceneObject();
-			sc.userID = "player";
+			sc.userID = "snake_";
 			sc.addComponent("playerController", PlayerController );
 			
 			/// Visual
@@ -21,7 +21,7 @@ package gameobj
 			visual.userID = "playerVisual";
 			visual.geometry = new BoxMesh( 0.5, 1, 0.5 );
 			visual.material = new MaterialFill( 0x0000CC );
-			visual.transformation.y = 5; /// Shift up to keep y as 0 in parent position
+			visual.transformation.y = 0.5; /// Shift up to keep y as 0 in parent position
 			
 			sc.addChild( visual );
 			

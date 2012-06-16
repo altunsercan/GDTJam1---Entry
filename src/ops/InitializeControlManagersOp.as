@@ -3,25 +3,30 @@ package ops
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
 	
+	import managers.KeyboardManager;
 	import managers.MouseManager;
 	
 	import org.as3commons.async.operation.IOperation;
 	import org.as3commons.async.operation.event.OperationEvent;
 	
-	public class InitializeMouseManagerOp extends EventDispatcher implements IOperation
+	public class InitializeControlManagersOp extends EventDispatcher implements IOperation
 	{
 		[Inject]
 		public var mouseManager:MouseManager;
 		
+		[Inject]
+		public var keyboardManager:KeyboardManager;
+		
 		private var initialized:Boolean = false;
 		
-		public function InitializeMouseManagerOp()
+		public function InitializeControlManagersOp()
 		{
 			super(this);
 			GDTJam1.masterInjector.injectInto( this );
 			
 			
 			mouseManager.initialize();
+			keyboardManager.initialize();
 			
 			initialized = true;
 			

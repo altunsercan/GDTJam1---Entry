@@ -1,8 +1,10 @@
 package gameobj
 {
+	import com.yogurt3d.core.materials.Material;
 	import com.yogurt3d.core.sceneobjects.SceneObject;
 	import com.yogurt3d.core.sceneobjects.SceneObjectRenderable;
 	import com.yogurt3d.presets.material.MaterialFill;
+	import com.yogurt3d.presets.material.MaterialTexture;
 	
 	import gameobj.controller.RepeatingPathController;
 	
@@ -10,8 +12,10 @@ package gameobj
 
 	public class RepeatingPathFactory
 	{
-		private static var m_testMaterial:MaterialFill = new MaterialFill( 0xCC0000, 0.7 );
-		
+		private static var m_testMaterial:MaterialFill = new MaterialFill( 0xAA0000 );
+		private static var m_testMaterial2:MaterialFill = new MaterialFill( 0xFF0000 );
+		private static var m_street1Material:MaterialTexture = new MaterialTexture( ResourcesManager.STREET1_TEXTURE );
+		private static var m_floorMaterial:MaterialTexture = new MaterialTexture( ResourcesManager.FLOOR_TEXTURE );
 		
 		private static var assetCounter:uint = 0;
 		
@@ -35,13 +39,13 @@ package gameobj
 				/// Visuals
 				var ground:SceneObjectRenderable = new SceneObjectRenderable();
 				ground.geometry = ResourcesManager.FLOOR_MESH;
-				ground.material = m_testMaterial;
+				ground.material = m_floorMaterial;
 				
 				sc.addChild( ground );
 				
 				var house:SceneObjectRenderable = new SceneObjectRenderable();
-				house.geometry = ResourcesManager.HOUSE_MESH;
-				house.material = m_testMaterial;
+				house.geometry = ResourcesManager.STREET1_MESH;
+				house.material = m_street1Material;
 				
 				sc.addChild( house );
 				

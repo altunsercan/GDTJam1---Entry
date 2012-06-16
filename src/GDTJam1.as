@@ -11,17 +11,22 @@ package
 	
 	import flash.display.Sprite;
 	import flash.display.Stage;
+	import flash.events.KeyboardEvent;
 	import flash.geom.Vector3D;
+	import flash.ui.Keyboard;
+	
+	import gameobj.ObstacleGenearator;
 	
 	import guard.GameSystemsReadyGuard;
 	
+	import managers.KeyboardManager;
 	import managers.MouseManager;
 	import managers.ResourcesManager;
 	import managers.ScreenManager;
 	import managers.Y3DManager;
 	
+	import ops.InitializeControlManagersOp;
 	import ops.InitializeDoomsdayConsoleOp;
-	import ops.InitializeMouseManagerOp;
 	
 	import org.as3commons.async.command.CompositeCommandKind;
 	import org.as3commons.async.command.ICompositeCommand;
@@ -29,7 +34,7 @@ package
 	import org.as3commons.async.operation.event.OperationEvent;
 	import org.swiftsuspenders.Injector;
 
-	[SWF(width="1024", height="768", frameRate="60", wmode="direct", backgroundColor="#000000")]
+	[SWF(width="1024", height="768", frameRate="40", wmode="direct", backgroundColor="#000000")]
 	public class GDTJam1 extends Sprite
 	{
 		public static var masterInjector:Injector;
@@ -44,12 +49,23 @@ package
 		/////
 		public function GDTJam1()
 		{
+			stage.focus = stage;
+			
+			//stage.addEventListener( KeyboardEvent.KEY_DOWN, test );
+			
+			var sprite:Sprite = new Sprite();
+			sprite.graphics.beginFill( 0x000000, 0.005 );
+			sprite.graphics.drawRect( 0, 0, width, height );
+			this.addChild( sprite );
+			
 			masterInjector = DependencyManager.injector;
 			masterInjector.map(GDTJam1).toValue( this );
 			masterInjector.map( ScreenManager ).toSingleton( ScreenManager );
 			masterInjector.map( Y3DManager ).toSingleton( Y3DManager );
 			masterInjector.map( ResourcesManager ).toSingleton( ResourcesManager );
 			masterInjector.map( MouseManager ).toSingleton( MouseManager );
+			masterInjector.map( KeyboardManager ).toSingleton( KeyboardManager );
+			masterInjector.map( ObstacleGenearator ).toSingleton( ObstacleGenearator );
 			
 			m_initializationCmd = new CompositeCommand( CompositeCommandKind.SEQUENCE )
 			.addOperation( InitializeDoomsdayConsoleOp ) /// Start initializing essentials
@@ -57,7 +73,7 @@ package
 				new CompositeCommand( CompositeCommandKind.PARALLEL) /// Splash Scene / Loader  and StartUp Processes runs in paralel
 				.addCommand( 
 					new CompositeCommand(CompositeCommandKind.SEQUENCE)  
-					.addCommand( new DisplaySplashCmd() )			// Display Splash Screen
+					//.addCommand( new DisplaySplashCmd() )			// Display Splash Screen
 					//.addCommand( new DisplayMainLoaderCmd() )			// Display Splash Screen
 					.addCommand( new GameSystemsReadyGuard() )      // Wait until game systems are ready
 					)
@@ -65,7 +81,7 @@ package
 					new CompositeCommand(CompositeCommandKind.SEQUENCE)  
 					.addCommand( new LoadGameAssetsCmd() )			// LoadAssets
 					.addCommand( new SetupY3DCmd() )      // Setup 3D
-					.addOperation( InitializeMouseManagerOp ) /// Initialize Mouse Manager
+					.addOperation( InitializeControlManagersOp ) /// Initialize Mouse Manager
 					)
 				);
 			
@@ -80,6 +96,11 @@ package
 		/////
 		// Initialization
 		/////
+		private function test(_e:KeyboardEvent):void
+		{
+			
+		}
+		
 		private function onInitializationComplete(_evt:OperationEvent):void
 		{
 			/// Test

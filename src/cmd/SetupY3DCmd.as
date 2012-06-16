@@ -3,6 +3,8 @@ package cmd
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	
+	import gameobj.ObstacleGenearator;
+	
 	import managers.Y3DManager;
 	
 	import org.as3commons.async.command.IAsyncCommand;
@@ -15,7 +17,8 @@ package cmd
 		[Inject]
 		public var y3dManager:Y3DManager;
 		
-		
+		[Inject]
+		public var obstacleGenerator:ObstacleGenearator;
 		
 		public function SetupY3DCmd()
 		{
@@ -27,6 +30,9 @@ package cmd
 			GDTJam1.masterInjector.injectInto( this );
 			try{
 				y3dManager.initializeManager();
+				
+				obstacleGenerator.initObstacles();
+				
 				
 				var opComplete:OperationEvent = new OperationEvent( OperationEvent.COMPLETE, this );
 				dispatchEvent( opComplete );
