@@ -58,11 +58,14 @@ package screens
 		
 		public function hide():void
 		{
+			this.alpha = 0;
 			
 		}
 		
 		public function destroyScreen():void
 		{
+			while( this.numChildren > 0 )
+				this.removeChildAt(0);
 			
 		}
 		

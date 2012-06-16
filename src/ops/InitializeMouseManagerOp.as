@@ -1,42 +1,37 @@
-package cmd
+package ops
 {
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
 	
-	import managers.ResourcesManager;
+	import managers.MouseManager;
 	
-	import org.as3commons.async.command.IAsyncCommand;
+	import org.as3commons.async.operation.IOperation;
 	import org.as3commons.async.operation.event.OperationEvent;
 	
-	public class LoadGameAssetsCmd extends EventDispatcher implements IAsyncCommand
+	public class InitializeMouseManagerOp extends EventDispatcher implements IOperation
 	{
 		[Inject]
-		public var resourceManager:ResourcesManager;
+		public var mouseManager:MouseManager;
 		
-		public function LoadGameAssetsCmd(target:IEventDispatcher=null)
-		{
-			super(target);
-		}
+		private var initialized:Boolean = false;
 		
-		public function execute():*
+		public function InitializeMouseManagerOp()
 		{
+			super(this);
 			GDTJam1.masterInjector.injectInto( this );
 			
-			resourceManager.COMPLETE.addOnce( onResourcesLoaded );
-			resourceManager.loadResources();
 			
-			return null;
-		}
-		
-		public function onResourcesLoaded():void
-		{
+			mouseManager.initialize();
+			
+			initialized = true;
+			
 			var event:OperationEvent = new OperationEvent( OperationEvent.COMPLETE, this );
 			dispatchEvent( event );
 		}
 		
 		public function get result():*
 		{
-			return null;
+			return {};
 		}
 		
 		public function get error():*
@@ -56,6 +51,12 @@ package cmd
 		public function addCompleteListener(listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false):void
 		{
 			addEventListener(OperationEvent.COMPLETE, listener, useCapture, priority, useWeakReference);
+			if( initialized )
+			{
+				var event:OperationEvent = new OperationEvent( OperationEvent.COMPLETE, this );
+				dispatchEvent( event );
+			}
+			
 		}
 		
 		public function addErrorListener(listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false):void

@@ -19,6 +19,7 @@ package cmd
 		
 		public function SetupY3DCmd()
 		{
+			super(this);
 		}
 		
 		public function execute():*

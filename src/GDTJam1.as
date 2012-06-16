@@ -4,6 +4,7 @@ package
 	import cmd.LoadGameAssetsCmd;
 	import cmd.SetupY3DCmd;
 	
+	import com.yogurt3d.core.managers.DependencyManager;
 	import com.yogurt3d.core.materials.Material;
 	import com.yogurt3d.presets.material.MaterialFill;
 	import com.yogurt3d.presets.sceneobjects.BoxSceneObject;
@@ -14,11 +15,13 @@ package
 	
 	import guard.GameSystemsReadyGuard;
 	
+	import managers.MouseManager;
 	import managers.ResourcesManager;
 	import managers.ScreenManager;
 	import managers.Y3DManager;
 	
 	import ops.InitializeDoomsdayConsoleOp;
+	import ops.InitializeMouseManagerOp;
 	
 	import org.as3commons.async.command.CompositeCommandKind;
 	import org.as3commons.async.command.ICompositeCommand;
@@ -41,11 +44,12 @@ package
 		/////
 		public function GDTJam1()
 		{
-			masterInjector = new Injector();
+			masterInjector = DependencyManager.injector;
 			masterInjector.map(GDTJam1).toValue( this );
 			masterInjector.map( ScreenManager ).toSingleton( ScreenManager );
 			masterInjector.map( Y3DManager ).toSingleton( Y3DManager );
 			masterInjector.map( ResourcesManager ).toSingleton( ResourcesManager );
+			masterInjector.map( MouseManager ).toSingleton( MouseManager );
 			
 			m_initializationCmd = new CompositeCommand( CompositeCommandKind.SEQUENCE )
 			.addOperation( InitializeDoomsdayConsoleOp ) /// Start initializing essentials
@@ -60,7 +64,8 @@ package
 				.addCommand( 
 					new CompositeCommand(CompositeCommandKind.SEQUENCE)  
 					.addCommand( new LoadGameAssetsCmd() )			// LoadAssets
-					.addCommand( new SetupY3DCmd() )      // Wait until game systems are ready
+					.addCommand( new SetupY3DCmd() )      // Setup 3D
+					.addOperation( InitializeMouseManagerOp ) /// Initialize Mouse Manager
 					)
 				);
 			

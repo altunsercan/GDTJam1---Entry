@@ -60,7 +60,7 @@ package guard
 		
 		public function get result():*
 		{
-			return null;
+			return {};
 		}
 		
 		public function get error():*

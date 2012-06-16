@@ -1,5 +1,6 @@
 package managers
 {
+	import com.yogurt3d.Yogurt3D;
 	import com.yogurt3d.core.cameras.Camera3D;
 	import com.yogurt3d.core.sceneobjects.Scene3D;
 	import com.yogurt3d.core.viewports.Viewport;
@@ -11,7 +12,6 @@ package managers
 
 	public class Y3DManager
 	{
-		
 		public var INITIALIZED:Signal = new Signal();
 		
 		private var m_viewport:Viewport;
@@ -45,7 +45,6 @@ package managers
 			
 			m_initialized = true;
 			
-
 			INITIALIZED.dispatch();
 		}
 		
@@ -67,6 +66,11 @@ package managers
 		public function get viewport():Viewport
 		{
 			return m_viewport;
+		}
+		
+		public function get gameScreen():GameScreen
+		{
+			return m_gamescreen;
 		}
 			
 	}

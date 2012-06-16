@@ -36,8 +36,8 @@ package managers
 			m_loadManager.add( "resources/y3d/zemin.y3d", 	DataLoader, Y3D_Parser);
 			m_loadManager.add( "resources/y3d/ev.y3d", 		DataLoader, Y3D_Parser );
 			m_loadManager.add( "resources/y3d/inek.y3d", 	DataLoader, Y3D_Parser );
-			m_loadManager.add( "resources/y3d/yılan.y3d", 	DataLoader, Y3D_Parser );
-			m_loadManager.add( "resources/y3d/cadır.y3d", 	DataLoader, Y3D_Parser );
+			m_loadManager.add( "resources/y3d/yilan.y3d", 	DataLoader, Y3D_Parser );
+			m_loadManager.add( "resources/y3d/cadir.y3d", 	DataLoader, Y3D_Parser );
 			
 			m_loadManager.start();
 		}
@@ -50,8 +50,8 @@ package managers
 			FLOOR_MESH = m_loadManager	.getLoadedContent( "resources/y3d/zemin.y3d" );
 			HOUSE_MESH = m_loadManager	.getLoadedContent( "resources/y3d/ev.y3d" );
 			COW_MESH = m_loadManager	.getLoadedContent( "resources/y3d/inek.y3d" );
-			SNAKE_MESH = m_loadManager	.getLoadedContent( "resources/y3d/yılan.y3d" );
-			TENT_MESH = m_loadManager	.getLoadedContent( "resources/y3d/cadır.y3d" );
+			SNAKE_MESH = m_loadManager	.getLoadedContent( "resources/y3d/yilan.y3d" );
+			TENT_MESH = m_loadManager	.getLoadedContent( "resources/y3d/cadir.y3d" );
 			
 			complete = true;
 			
