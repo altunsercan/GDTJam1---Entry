@@ -1,6 +1,7 @@
 package
 {
 	import cmd.DisplaySplashCmd;
+	import cmd.LoadGameAssetsCmd;
 	import cmd.SetupY3DCmd;
 	
 	import com.yogurt3d.core.materials.Material;
@@ -13,6 +14,7 @@ package
 	
 	import guard.GameSystemsReadyGuard;
 	
+	import managers.ResourcesManager;
 	import managers.ScreenManager;
 	import managers.Y3DManager;
 	
@@ -43,6 +45,7 @@ package
 			masterInjector.map(GDTJam1).toValue( this );
 			masterInjector.map( ScreenManager ).toSingleton( ScreenManager );
 			masterInjector.map( Y3DManager ).toSingleton( Y3DManager );
+			masterInjector.map( ResourcesManager ).toSingleton( ResourcesManager );
 			
 			m_initializationCmd = new CompositeCommand( CompositeCommandKind.SEQUENCE )
 			.addOperation( InitializeDoomsdayConsoleOp ) /// Start initializing essentials
@@ -56,7 +59,7 @@ package
 					)
 				.addCommand( 
 					new CompositeCommand(CompositeCommandKind.SEQUENCE)  
-					//.addCommand( new LoadGameAssetsCmd() )			// LoadAssets
+					.addCommand( new LoadGameAssetsCmd() )			// LoadAssets
 					.addCommand( new SetupY3DCmd() )      // Wait until game systems are ready
 					)
 				);
@@ -78,21 +81,7 @@ package
 			var screenManager:ScreenManager = masterInjector.getInstance( ScreenManager );
 			screenManager.changeScreen( "gameScreen" );
 			
-			var y3dManager:Y3DManager = masterInjector.getInstance( Y3DManager );
 			
-			var sceneObj:BoxSceneObject = new BoxSceneObject( );
-			sceneObj.material = new MaterialFill( 0x0000FF );
-			
-			
-			
-			y3dManager.scene.addChild( sceneObj );
-			
-			
-			y3dManager.camera.transformation.position = new Vector3D( 15, 15, 15 );
-			y3dManager.camera.transformation.lookAt( new Vector3D() );
-			
-			
-			y3dManager.viewport.update();
 				
 		}
 		private function onInitializationError(_evt:OperationEvent):void
