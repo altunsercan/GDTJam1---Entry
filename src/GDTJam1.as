@@ -19,11 +19,13 @@ package
 	
 	import guard.GameSystemsReadyGuard;
 	
+	import managers.GameStatsManager;
 	import managers.KeyboardManager;
 	import managers.MouseManager;
 	import managers.PhysicsManager;
 	import managers.ResourcesManager;
 	import managers.ScreenManager;
+	import managers.SoundManager;
 	import managers.Y3DManager;
 	
 	import ops.InitializeControlManagersOp;
@@ -68,6 +70,8 @@ package
 			masterInjector.map( KeyboardManager ).toSingleton( KeyboardManager );
 			masterInjector.map( ObstacleGenearator ).toSingleton( ObstacleGenearator );
 			masterInjector.map( PhysicsManager ).toSingleton( PhysicsManager );
+			masterInjector.map( GameStatsManager ).toSingleton( GameStatsManager );
+			masterInjector.map( SoundManager ).toSingleton( SoundManager );
 			
 			m_initializationCmd = new CompositeCommand( CompositeCommandKind.SEQUENCE )
 			.addOperation( InitializeDoomsdayConsoleOp ) /// Start initializing essentials
@@ -75,7 +79,7 @@ package
 				new CompositeCommand( CompositeCommandKind.PARALLEL) /// Splash Scene / Loader  and StartUp Processes runs in paralel
 				.addCommand( 
 					new CompositeCommand(CompositeCommandKind.SEQUENCE)  
-					//.addCommand( new DisplaySplashCmd() )			// Display Splash Screen
+					.addCommand( new DisplaySplashCmd() )			// Display Splash Screen
 					//.addCommand( new DisplayMainLoaderCmd() )			// Display Splash Screen
 					.addCommand( new GameSystemsReadyGuard() )      // Wait until game systems are ready
 					)

@@ -27,7 +27,9 @@ package gameobj
 			visual.userID = "playerVisual";
 			visual.geometry = ResourcesManager.PLAYER_MESH;
 			var animCont:SkinController = SkinController( visual.geometry.getComponent("skinController"));
-			animCont.addAnimation( "run", ResourcesManager.PLAYER_ANIM );
+			animCont.addAnimation( "run", ResourcesManager.RUN_ANIM );
+			animCont.addAnimation( "dash", ResourcesManager.DASH_ANIM );
+			animCont.addAnimation( "runFast", ResourcesManager.RUNFAST_ANIM );
 			animCont.playAnimation("run");
 			visual.material = new MaterialTexture( ResourcesManager.PLAYER_TEXTURE );
 			

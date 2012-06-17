@@ -4,12 +4,15 @@ package gameobj
 	import com.yogurt3d.core.sceneobjects.SceneObjectRenderable;
 	import com.yogurt3d.presets.geometry.BoxMesh;
 	import com.yogurt3d.presets.material.MaterialFill;
+	import com.yogurt3d.presets.material.MaterialTexture;
+	
+	import gameobj.controller.CowController;
 	
 	import managers.ResourcesManager;
 
 	public class CowFactory
 	{
-		private static var m_testMaterial:MaterialFill = new MaterialFill( 0x121212);
+		private static var m_cowMaterial:MaterialTexture = new MaterialTexture( ResourcesManager.COW_TEXTURE );
 		
 		private static var assetCounter:uint = 0;
 		
@@ -28,10 +31,13 @@ package gameobj
 				var sc:SceneObject = new SceneObject();
 				sc.userID = "cow_"+ ++assetCounter;
 				
+				sc.addComponent("cowController", CowController );
+				
 				/// Visual
 				var visual:SceneObjectRenderable = new SceneObjectRenderable();
 				visual.geometry = ResourcesManager.COW_MESH;
-				visual.material = m_testMaterial;
+				visual.material = m_cowMaterial;
+				
 				
 				sc.addChild( visual );
 				

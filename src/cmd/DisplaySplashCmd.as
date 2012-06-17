@@ -11,12 +11,11 @@ package cmd
 	import org.as3commons.logging.api.getLogger;
 	import org.osflash.signals.Signal;
 	
+	import screens.GameOverScreen;
 	import screens.SplashScreenY3D;
 	
 	public class DisplaySplashCmd extends EventDispatcher implements IAsyncCommand
 	{
-		
-		
 		[Inject]
 		public var screenManager:ScreenManager;
 		
@@ -41,6 +40,10 @@ package cmd
 			{
 				var splash:SplashScreenY3D = new SplashScreenY3D();	
 				splash.SPLASH_COMPLETE.addOnce( onSplashComplete );
+				
+				var gameover:GameOverScreen = new GameOverScreen();
+				
+				screenManager.addScreen( "gameover", gameover );
 				screenManager.addScreen( "splash", splash, true );
 				
 			}

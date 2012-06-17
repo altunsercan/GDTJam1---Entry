@@ -47,14 +47,36 @@ package gameobj
 			
 			obstacleTemp = new ObstacleTemplate();
 			obstacleTemp.obstacleLength = 10;
-			obstacleTemp.obstacleItemList.push( {type:OBS_SNAKE,  x: 6, z:0 } );
-			obstacleTemp.obstacleItemList.push( {type:OBS_COW,  x: 4, z:2 } );	
+			obstacleTemp.obstacleItemList.push( {type:OBS_SNAKE,  x: 4, z:0 } );
+			obstacleTemp.obstacleItemList.push( {type:OBS_COW,  x: 8, z:0 } );	
 			obstacleTemplates.push( obstacleTemp );
 			
 			obstacleTemp = new ObstacleTemplate();
 			obstacleTemp.obstacleLength = 15;
 			obstacleTemp.obstacleItemList.push( {type:OBS_SNAKE,  x: 12, z:-4 } );
 			obstacleTemp.obstacleItemList.push( {type:OBS_SNAKE,  x: 8, z:4 } );
+			obstacleTemplates.push( obstacleTemp );
+			
+			obstacleTemp = new ObstacleTemplate();
+			obstacleTemp.obstacleLength = 15;
+			obstacleTemp.obstacleItemList.push( {type:OBS_SNAKE,  x: 8, z:0 } );
+			obstacleTemp.obstacleItemList.push( {type:OBS_SNAKE,  x: 12, z:8 } );
+			obstacleTemplates.push( obstacleTemp );
+			
+			obstacleTemp = new ObstacleTemplate();
+			obstacleTemp.obstacleLength = 15;
+			obstacleTemp.obstacleItemList.push( {type:OBS_SNAKE,  x: 8, z:-4 } );
+			obstacleTemp.obstacleItemList.push( {type:OBS_SNAKE,  x: 8, z: 0 } );
+			obstacleTemp.obstacleItemList.push( {type:OBS_SNAKE,  x: 8, z:4 } );
+			obstacleTemp.obstacleItemList.push( {type:OBS_SNAKE,  x: 8, z:8 } );
+			obstacleTemplates.push( obstacleTemp );
+			
+			obstacleTemp = new ObstacleTemplate();
+			obstacleTemp.obstacleLength = 15;
+			obstacleTemp.obstacleItemList.push( {type:OBS_SNAKE,  x: 2, z:-4 } );
+			obstacleTemp.obstacleItemList.push( {type:OBS_COW,  x: 3, z: 0 } );
+			obstacleTemp.obstacleItemList.push( {type:OBS_COW,  x: 6, z:4 } );
+			obstacleTemp.obstacleItemList.push( {type:OBS_COW,  x: 9, z:8 } );
 			obstacleTemplates.push( obstacleTemp );
 		}
 		

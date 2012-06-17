@@ -10,11 +10,13 @@ package screens
 	
 	import flash.display.Sprite;
 	import flash.geom.Vector3D;
+	import flash.text.TextField;
 	
 	import gameobj.ObstacleGenearator;
 	import gameobj.PlayerFactory;
 	import gameobj.RepeatingPathFactory;
 	
+	import managers.GameStatsManager;
 	import managers.MouseManager;
 	import managers.Y3DManager;
 	
@@ -27,6 +29,9 @@ package screens
 		
 		[Inject]
 		public var obstacleGen:ObstacleGenearator;
+		
+		[Inject]
+		public var gameStats:GameStatsManager;
 		
 		[Inject]
 		public var mouseManager:MouseManager;
@@ -104,17 +109,22 @@ package screens
 			/// Player
 			var player:SceneObject = PlayerFactory.instantiatePlayer();
 			y3dManager.scene.addChild( player );
+			player.transformation.x = -5;
 			
 			
 			/// Obstacles
 			obstacleGen.start();
 			
+			// Stats 
+			gameStats.start( this );
+			
+			
 			/// Debug
 			// Show 3d mouse intersection point
-			m_debug_mouse3d = new SphereSceneObject( 0.5 );
-			m_debug_mouse3d.material = new MaterialFill( 0x003300 );
-			
-			y3dManager.scene.addChild( m_debug_mouse3d );
+//			m_debug_mouse3d = new SphereSceneObject( 0.5 );
+//			m_debug_mouse3d.material = new MaterialFill( 0x003300 );
+//			
+//			y3dManager.scene.addChild( m_debug_mouse3d );
 			
 			Yogurt3D.onFrameEnd.add( onPreUpdate );
 			
@@ -126,11 +136,11 @@ package screens
 		{
 			if( m_gameSetupComplete )
 			{
-				var pos:Vector3D = mouseManager.position3D;
-				if( pos )
-				{
-					m_debug_mouse3d.transformation.position = pos ;
-				}
+//				var pos:Vector3D = mouseManager.position3D;
+//				if( pos )
+//				{
+//					m_debug_mouse3d.transformation.position = pos ;
+//				}
 			}
 			
 			

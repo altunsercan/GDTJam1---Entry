@@ -8,13 +8,16 @@ package gameobj.controller
 	
 	import com.yogurt3d.Yogurt3D;
 	import com.yogurt3d.core.Time;
+	import com.yogurt3d.core.animation.controllers.SkinController;
 	import com.yogurt3d.core.objects.interfaces.IController;
 	import com.yogurt3d.core.sceneobjects.SceneObject;
+	import com.yogurt3d.core.sceneobjects.SceneObjectRenderable;
 	
 	import flash.geom.Transform;
 	import flash.geom.Vector3D;
 	import flash.ui.Keyboard;
 	
+	import managers.GameStatsManager;
 	import managers.GlobalVariables;
 	import managers.KeyboardManager;
 	import managers.MouseManager;
@@ -23,11 +26,13 @@ package gameobj.controller
 	
 	public class PlayerController implements IController
 	{
-		private const STATE_INACTIVE:int = 0;
-		private const STATE_NORMAL:int = 1;
-		private const STATE_DASH:int = 2;
-		private const STATE_RUN:int = 3;
-		private const STATE_HIT:int = 4;
+		
+		
+		public static const STATE_INACTIVE:int = 0;
+		public static const STATE_NORMAL:int = 1;
+		public static const STATE_DASH:int = 2;
+		public static const STATE_RUN:int = 3;
+		public static const STATE_HIT:int = 4;
 			
 		public var limitzmax:Number = 7;
 		public var limitzmin:Number = -5;
@@ -59,13 +64,21 @@ package gameobj.controller
 		[Inject]
 		public var y3dManager:Y3DManager;
 		
+		[Inject]
+		public var gameStats:GameStatsManager;
 		
-		private var controlState:int = STATE_INACTIVE; 
+		
+		private var m_controlState:int = STATE_INACTIVE; 
+		
+		public function get controlState():int
+		{
+			return m_controlState;
+		}
 		
 		
 		/// Dash variables
 		private const dashSpeed:Number = 30;
-		
+		private var shiftbackComplete:Boolean = false;
 		private var dashTarget:Vector3D;
 		private var dashTargetReached:Boolean;
 		
@@ -88,7 +101,7 @@ package gameobj.controller
 			bodyDef.type =  b2Body.b2_dynamicBody;
 			bodyDef.userData = this;
 			
-			var shape:b2CircleShape = new b2CircleShape( 1 );
+			var shape:b2CircleShape = new b2CircleShape( 0.5 );
 			var fixtureDef:b2FixtureDef = new b2FixtureDef();
 			fixtureDef.shape = shape;
 			fixtureDef.restitution = 0.7;
@@ -96,7 +109,7 @@ package gameobj.controller
 			hitbox = phyManager.world.CreateBody( bodyDef );
 			hitbox.CreateFixture( fixtureDef );
 			
-			controlState = STATE_NORMAL;
+			m_controlState = STATE_NORMAL;
 		}
 		
 		private function onPreUpdate():void
@@ -104,25 +117,26 @@ package gameobj.controller
 			if( !y3dManager.gameScreen.gameRunning ) return;
 			
 			/// Switch states
-			if( controlState==STATE_NORMAL && keyboardManager.isKeyJustDown( Keyboard.E ) )
+			if( m_controlState==STATE_NORMAL && keyboardManager.isKeyJustDown( Keyboard.E ) && gameStats.energy > 15 )
 			{
+				gameStats.energy -= 15;
 				setDashVariables();
 			}
-			if( controlState==STATE_NORMAL && keyboardManager.isKeyJustDown( Keyboard.W ) )
+			if( m_controlState==STATE_NORMAL && keyboardManager.isKeyJustDown( Keyboard.W ) )
 			{
 				setRunVaribles();
 			}
-			if( controlState==STATE_RUN && keyboardManager.isKeyJustUp( Keyboard.W ) )
+			if( m_controlState==STATE_RUN && keyboardManager.isKeyJustUp( Keyboard.W ) )
 			{
 				unsetRunVaribles();
 			}
-			if( controlState==STATE_HIT && hitTime+hitSlowdownLength < Time.timeSeconds )
+			if( m_controlState==STATE_HIT && hitTime+hitSlowdownLength < Time.timeSeconds )
 			{
 				unsetHitVaribles();
 			}
 			
 			//// Do state actions
-			switch(controlState)
+			switch(m_controlState)
 			{
 				case STATE_NORMAL:
 				case STATE_RUN:
@@ -152,6 +166,18 @@ package gameobj.controller
 			var nextPosition:Vector3D = mouseManager.position3D;
 			
 			if( nextPosition == null ) return;
+			
+			if( controlState == STATE_RUN  )
+			{
+				if( gameStats.energy <= 0 )
+				{
+					unsetRunVaribles();
+				}else
+				{
+					gameStats.energy -= 1;
+				}
+				
+			}
 			
 			/// UpdateArrow
 			scObj.children[2].transformation.position = new Vector3D(); 
@@ -199,6 +225,11 @@ package gameobj.controller
 			{
 				
 				scObj.transformation.x = Math.max( currentPos.x - Time.deltaTimeSeconds * GlobalVariables.RUN_SPEED * GlobalVariables.GAME_SPEED  ,desiredx );
+				if( currentPos.x != desiredx )
+				{
+					shiftbackComplete = true;
+				}
+				
 			}
 			
 			
@@ -285,6 +316,9 @@ package gameobj.controller
 		{
 			dashTarget = mouseManager.position3D;
 			
+			var animCont:SkinController = SkinController( SceneObjectRenderable( scObj.children[0] ).geometry.getComponent("skinController"));
+			animCont.playAnimation("dash");
+			
 			if( dashTarget.z > limitzmax )
 			{
 				dashTarget.z = limitzmax;
@@ -295,27 +329,39 @@ package gameobj.controller
 			
 			dashTargetReached = false;
 			
-			controlState = STATE_DASH;
+			shiftbackComplete = false;
+			
+			m_controlState = STATE_DASH;
 		}
 		private function unsetDashVariables():void
 		{
 			dashTarget = null;
-			controlState = STATE_NORMAL;
+			
+			var animCont:SkinController = SkinController( SceneObjectRenderable( scObj.children[0] ).geometry.getComponent("skinController"));
+			animCont.playAnimation("run");
+			
+			m_controlState = STATE_NORMAL;
 		}
 		private function setRunVaribles():void
 		{
+			var animCont:SkinController = SkinController(SceneObjectRenderable( scObj.children[0] ).geometry.getComponent("skinController"));
+			animCont.playAnimation("runFast");
+			
 			GlobalVariables.RUN_SPEED = 12;
-			controlState = STATE_RUN;
+			m_controlState = STATE_RUN;
 		}
 		private function unsetRunVaribles():void
 		{
+			var animCont:SkinController = SkinController( SceneObjectRenderable( scObj.children[0] ).geometry.getComponent("skinController"));
+			animCont.playAnimation("run");
+			
 			GlobalVariables.RUN_SPEED = 6;
-			controlState = STATE_NORMAL;
+			m_controlState = STATE_NORMAL;
 		}
 		public function setHitVaribles():void
 		{
 			GlobalVariables.RUN_SPEED = 2;
-			controlState = STATE_HIT;
+			m_controlState = STATE_HIT;
 			
 			hitTime = Time.timeSeconds;
 			
@@ -323,7 +369,7 @@ package gameobj.controller
 		public function unsetHitVaribles():void
 		{
 			GlobalVariables.RUN_SPEED = 6;
-			controlState = STATE_NORMAL;
+			m_controlState = STATE_NORMAL;
 			
 			
 		}

@@ -6,6 +6,7 @@ package cmd
 	import gameobj.ObstacleGenearator;
 	
 	import managers.PhysicsManager;
+	import managers.SoundManager;
 	import managers.Y3DManager;
 	
 	import org.as3commons.async.command.IAsyncCommand;
@@ -24,6 +25,9 @@ package cmd
 		[Inject]
 		public var phyManager:PhysicsManager;
 		
+		[Inject]
+		public var soundManager:SoundManager;
+		
 		public function SetupY3DCmd()
 		{
 			super(this);
@@ -38,6 +42,8 @@ package cmd
 				obstacleGenerator.initObstacles();
 				
 				phyManager.initializePhysics();
+				
+				soundManager.inititialize();
 				
 				var opComplete:OperationEvent = new OperationEvent( OperationEvent.COMPLETE, this );
 				dispatchEvent( opComplete );

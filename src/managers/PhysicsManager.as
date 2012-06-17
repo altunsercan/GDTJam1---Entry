@@ -14,6 +14,7 @@ package managers
 		public var screenManager:ScreenManager;
 		
 		
+		
 		public var world:b2World;
 		
 		public var debugSprite:Sprite;
@@ -29,8 +30,8 @@ package managers
 			world = new b2World( new b2Vec2(), false );
 			world.SetContactListener( new GameContactListener() );
 			
-			setupDebugDraw();
-			world.SetDebugDraw( debugDraw );
+			//setupDebugDraw();
+			//world.SetDebugDraw( debugDraw );
 			
 			Yogurt3D.onFrameStart.add( update );
 		}
@@ -61,6 +62,7 @@ package managers
 import Box2D.Dynamics.Contacts.b2Contact;
 import Box2D.Dynamics.b2ContactListener;
 
+import gameobj.controller.CowController;
 import gameobj.controller.ObstacleController;
 import gameobj.controller.PlayerController;
 import gameobj.controller.SnakeController;
@@ -92,8 +94,25 @@ internal class GameContactListener extends b2ContactListener
 			{
 				// Die or slow down
 				playerController.setHitVaribles();
+				SnakeController( other ).playHit();
+			}
+			
+			if( other is CowController)
+			{
+				if( playerController.controlState == PlayerController.STATE_DASH)
+				{
+					/// Dash Kill the cow
+					CowController(other).dashKilled();
+				}else 
+				{
+					/// Got hit
+					playerController.setHitVaribles();
+				}
+				
+				
 				
 			}
+			
 			
 			
 			
