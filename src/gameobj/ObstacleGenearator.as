@@ -15,6 +15,7 @@ package gameobj
 	public class ObstacleGenearator
 	{
 		private const OBS_SNAKE:uint = 1;
+		private const OBS_COW:uint = 2;
 		
 		private var obstacleTemplatesByDifficulty:Dictionary;
 		
@@ -47,6 +48,7 @@ package gameobj
 			obstacleTemp = new ObstacleTemplate();
 			obstacleTemp.obstacleLength = 10;
 			obstacleTemp.obstacleItemList.push( {type:OBS_SNAKE,  x: 6, z:0 } );
+			obstacleTemp.obstacleItemList.push( {type:OBS_COW,  x: 4, z:2 } );	
 			obstacleTemplates.push( obstacleTemp );
 			
 			obstacleTemp = new ObstacleTemplate();
@@ -69,23 +71,7 @@ package gameobj
 			
 			m_currentObsticleLen += template.obstacleLength;
 			
-//			var positionNumber:Number = startOffset;
-//			/// create obstacles to the need 			
-//			while( m_currentObsticleLen < minPrefetchObstacleLength )
-//			{
-//				var template:ObstacleTemplate = getRandomObstacleTemplate();
-//				
-//				var obstacle:SceneObject = createObstacle( template );
-//				obstacle.transformation.x = positionNumber;
-//				
-//				y3dManager.scene.addChild( obstacle );
-//				m_obstaclesInScene.push( obstacle );
-//				
-//				positionNumber += template.obstacleLength;
-//				m_currentObsticleLen += template.obstacleLength;
-//				
-//			}
-			
+
 			Yogurt3D.onFrameStart.add( onUpdate );
 			
 		}
@@ -149,6 +135,10 @@ package gameobj
 				{
 					case OBS_SNAKE:
 						obs = SnakeFactory.instantiateSnake();
+						break;
+					case OBS_COW:
+						obs = CowFactory.instantiateCow();
+						obs.transformation.rotationY = Math.random()*360;
 						break;
 				}
 				obs.transformation.x = obj.x;

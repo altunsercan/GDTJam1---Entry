@@ -5,6 +5,8 @@ package gameobj
 	import com.yogurt3d.presets.geometry.BoxMesh;
 	import com.yogurt3d.presets.material.MaterialFill;
 	
+	import gameobj.controller.SnakeController;
+	
 	import managers.ResourcesManager;
 
 	public class SnakeFactory
@@ -28,11 +30,13 @@ package gameobj
 				var sc:SceneObject = new SceneObject();
 				sc.userID = "snake_"+ ++assetCounter;
 				
+				sc.addComponent( "snakeController", SnakeController);
+				
 				/// Visual
 				var visual:SceneObjectRenderable = new SceneObjectRenderable();
 				visual.geometry = ResourcesManager.SNAKE_MESH
 				visual.material = m_testMaterial;
-				visual.transformation.y = 0.25; /// Shift up to keep y as 0 in parent position
+				
 				
 				sc.addChild( visual );
 				

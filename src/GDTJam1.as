@@ -21,6 +21,7 @@ package
 	
 	import managers.KeyboardManager;
 	import managers.MouseManager;
+	import managers.PhysicsManager;
 	import managers.ResourcesManager;
 	import managers.ScreenManager;
 	import managers.Y3DManager;
@@ -66,6 +67,7 @@ package
 			masterInjector.map( MouseManager ).toSingleton( MouseManager );
 			masterInjector.map( KeyboardManager ).toSingleton( KeyboardManager );
 			masterInjector.map( ObstacleGenearator ).toSingleton( ObstacleGenearator );
+			masterInjector.map( PhysicsManager ).toSingleton( PhysicsManager );
 			
 			m_initializationCmd = new CompositeCommand( CompositeCommandKind.SEQUENCE )
 			.addOperation( InitializeDoomsdayConsoleOp ) /// Start initializing essentials
@@ -79,8 +81,8 @@ package
 					)
 				.addCommand( 
 					new CompositeCommand(CompositeCommandKind.SEQUENCE)  
-					.addCommand( new LoadGameAssetsCmd() )			// LoadAssets
 					.addCommand( new SetupY3DCmd() )      // Setup 3D
+					.addCommand( new LoadGameAssetsCmd() )			// LoadAssets
 					.addOperation( InitializeControlManagersOp ) /// Initialize Mouse Manager
 					)
 				);

@@ -3,6 +3,7 @@ package guard
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	
+	import managers.ResourcesManager;
 	import managers.Y3DManager;
 	
 	import org.as3commons.async.command.IAsyncCommand;
@@ -13,6 +14,9 @@ package guard
 	{
 		[Inject]
 		public var y3dManager:Y3DManager;
+		
+		[Inject]
+		public var resourcesManager:ResourcesManager;
 		
 		private var m_systemwaitcounter:int = 0;
 		
@@ -32,6 +36,13 @@ package guard
 				systemsReady = false;
 				m_systemwaitcounter++;
 				y3dManager.INITIALIZED.addOnce( decreaseCounter );	
+			}
+			
+			if( !resourcesManager.complete )
+			{
+				systemsReady = false;
+				m_systemwaitcounter++;
+				resourcesManager.COMPLETE.addOnce( decreaseCounter );	
 			}
 			
 			

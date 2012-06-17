@@ -1,5 +1,11 @@
 package gameobj.controller
 {
+	import Box2D.Collision.Shapes.b2CircleShape;
+	import Box2D.Common.Math.b2Vec2;
+	import Box2D.Dynamics.b2Body;
+	import Box2D.Dynamics.b2BodyDef;
+	import Box2D.Dynamics.b2FixtureDef;
+	
 	import com.yogurt3d.Yogurt3D;
 	import com.yogurt3d.core.Time;
 	import com.yogurt3d.core.objects.interfaces.IController;
@@ -12,6 +18,7 @@ package gameobj.controller
 	import managers.GlobalVariables;
 	import managers.KeyboardManager;
 	import managers.MouseManager;
+	import managers.PhysicsManager;
 	import managers.Y3DManager;
 	
 	public class PlayerController implements IController
@@ -20,6 +27,7 @@ package gameobj.controller
 		private const STATE_NORMAL:int = 1;
 		private const STATE_DASH:int = 2;
 		private const STATE_RUN:int = 3;
+		private const STATE_HIT:int = 4;
 			
 		public var limitzmax:Number = 7;
 		public var limitzmin:Number = -5;
@@ -46,6 +54,9 @@ package gameobj.controller
 		public var keyboardManager:KeyboardManager;
 		
 		[Inject]
+		public var phyManager:PhysicsManager;
+		
+		[Inject]
 		public var y3dManager:Y3DManager;
 		
 		
@@ -58,6 +69,12 @@ package gameobj.controller
 		private var dashTarget:Vector3D;
 		private var dashTargetReached:Boolean;
 		
+		/// Hit variables
+		private var hitTime:Number = 0;
+		private const hitSlowdownLength:Number = 2;
+		
+		//// Physics variables
+		private var hitbox:b2Body;
 		public function PlayerController()
 		{
 		}
@@ -66,6 +83,18 @@ package gameobj.controller
 		{
 			//GDTJam1.masterInjector.injectInto(this);
 			Yogurt3D.onFrameStart.add( onPreUpdate );
+			
+			var bodyDef:b2BodyDef = new b2BodyDef();
+			bodyDef.type =  b2Body.b2_dynamicBody;
+			bodyDef.userData = this;
+			
+			var shape:b2CircleShape = new b2CircleShape( 1 );
+			var fixtureDef:b2FixtureDef = new b2FixtureDef();
+			fixtureDef.shape = shape;
+			fixtureDef.restitution = 0.7;
+			fixtureDef.isSensor = false;
+			hitbox = phyManager.world.CreateBody( bodyDef );
+			hitbox.CreateFixture( fixtureDef );
 			
 			controlState = STATE_NORMAL;
 		}
@@ -86,6 +115,10 @@ package gameobj.controller
 			if( controlState==STATE_RUN && keyboardManager.isKeyJustUp( Keyboard.W ) )
 			{
 				unsetRunVaribles();
+			}
+			if( controlState==STATE_HIT && hitTime+hitSlowdownLength < Time.timeSeconds )
+			{
+				unsetHitVaribles();
 			}
 			
 			//// Do state actions
@@ -109,6 +142,8 @@ package gameobj.controller
 				}
 			}
 			
+			hitbox.SetPosition( new b2Vec2( scObj.transformation.globalPosition.x, scObj.transformation.globalPosition.z ) );
+			
 		}
 		private function normalStatePreUpdate():void
 		{
@@ -117,6 +152,11 @@ package gameobj.controller
 			var nextPosition:Vector3D = mouseManager.position3D;
 			
 			if( nextPosition == null ) return;
+			
+			/// UpdateArrow
+			scObj.children[2].transformation.position = new Vector3D(); 
+			scObj.children[2].transformation.lookAt( nextPosition );
+		
 			
 			nextPosition.z = roundPosition(nextPosition.z);
 			
@@ -272,7 +312,21 @@ package gameobj.controller
 			GlobalVariables.RUN_SPEED = 6;
 			controlState = STATE_NORMAL;
 		}
-		
+		public function setHitVaribles():void
+		{
+			GlobalVariables.RUN_SPEED = 2;
+			controlState = STATE_HIT;
+			
+			hitTime = Time.timeSeconds;
+			
+		}
+		public function unsetHitVaribles():void
+		{
+			GlobalVariables.RUN_SPEED = 6;
+			controlState = STATE_NORMAL;
+			
+			
+		}
 		private function roundPosition( pos:Number ):Number
 		{
 			return int(pos * 100)/100;
